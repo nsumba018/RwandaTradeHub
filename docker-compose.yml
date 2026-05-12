@@ -1,0 +1,61 @@
+services:
+
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: rwandatrade_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rwandatradehub_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rwandatradehub_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Spring Boot Backend ────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rwandatrade_backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/rwandatradehub_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres123
+      SERVER_PORT: 8081
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # ── React Frontend (Nginx) ─────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: rwandatrade_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+# ── Shared network ─────────────────────────────────────────────────────────
+networks:
+  app-network:
+    driver: bridge
+
+# ── Named volume (DB data persists across restarts) ─────────────────────────
+volumes:
+  postgres_data:
