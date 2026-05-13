@@ -16,6 +16,7 @@ import com.rwandatradehub.repository.InvoiceRepository;
 import com.rwandatradehub.repository.TransactionRepository;
 import com.rwandatradehub.repository.UserRepository;
 import com.rwandatradehub.service.InvestmentService;
+import com.rwandatradehub.service.NotificationService;
 import com.rwandatradehub.util.InvoiceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +36,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     private final InvestmentRepository investmentRepository;
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     public List<InvoiceResponse> getAvailableInvoices() {
@@ -74,6 +76,16 @@ public class InvestmentServiceImpl implements InvestmentService {
 
         invoice.setStatus(InvoiceStatus.FUNDED);
         invoiceRepository.save(invoice);
+
+        String amountFormatted = String.format("RWF %,.0f", request.getAmount().doubleValue());
+        notificationService.create(
+                invoice.getUploadedBy(),
+                "Invoice Funded!",
+                "Your invoice " + invoice.getInvoiceNumber() + " has been funded. " +
+                        amountFormatted + " has been committed by an investor. " +
+                        "Funds will be disbursed within 48 hours.",
+                "success"
+        );
 
         return toInvestmentResponse(investment, invoice);
     }

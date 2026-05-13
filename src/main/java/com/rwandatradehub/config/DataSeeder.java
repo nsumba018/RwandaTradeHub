@@ -44,7 +44,7 @@ public class DataSeeder implements CommandLineRunner {
         // Users
         User admin = save(user("Platform Admin", "admin@rwandatradehub.rw", "admin123", "+250788000001", Role.ADMIN));
         User sme1  = save(user("Amina Uwimana",   "amina@kigalifresh.rw",   "sme123",   "+250788000002", Role.SME));
-        User sme2  = save(user("Claude Hakizimana","claude@techsolutions.rw","sme123",   "+250788000003", Role.SME));
+        User sme2  = save(user("Claude Kalisa",    "claude@techsolutions.rw","sme123",   "+250788000003", Role.SME));
         User inv1  = save(user("RDF Investments",  "invest@rdf.rw",          "investor123","+250788000004", Role.INVESTOR));
         User inv2  = save(user("David Nkurunziza", "david@equity.rw",        "investor123","+250788000005", Role.INVESTOR));
 
@@ -75,7 +75,7 @@ public class DataSeeder implements CommandLineRunner {
         log.info("=== Seed accounts ===");
         log.info("ADMIN    : admin@rwandatradehub.rw / admin123");
         log.info("SME 1    : amina@kigalifresh.rw    / sme123");
-        log.info("SME 2    : claude@techsolutions.rw / sme123");
+        log.info("SME 2    : claude@techsolutions.rw / sme123  (Claude Kalisa)");
         log.info("INVESTOR1: invest@rdf.rw           / investor123");
         log.info("INVESTOR2: david@equity.rw         / investor123");
         log.info("Database seeded successfully!");

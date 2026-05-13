@@ -15,5 +15,7 @@ public class TransactionResponse {
     private LocalDateTime transactionDate;
     private TransactionStatus status;
     private String invoiceNumber;
+    private String customerName;
     private String investorName;
+    private String investorEmail;
 }
